@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+
+<StackPane xmlns:fx="http://javafx.com/fxml/1"
+           xmlns="http://javafx.com/javafx/21"
+           fx:controller="fr.iutgon.sae401.clientSide.controller.GameController"
+           styleClass="root-menu"
+           prefWidth="960.0" prefHeight="640.0">
+    <children>
+        <Pane fx:id="gamePane" focusTraversable="true" />
+    </children>
+</StackPane>

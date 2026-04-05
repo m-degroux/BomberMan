@@ -1,0 +1,510 @@
+/* =========================================================================
+   VOTRE STYLE ORIGINAL (INTACT)
+   ========================================================================= */
+.root-menu {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #0f1021, #1a1b3a),
+    linear-gradient(from 0% 100% to 100% 0%, rgba(255, 255, 255, 0.03), rgba(0, 0, 0, 0.0));
+    -fx-background-insets: 0, 0;
+}
+
+.menu-panel {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #22254a, #15172f);
+    -fx-border-color: #f9d65c;
+    -fx-border-width: 4px;
+    -fx-background-radius: 10px;
+    -fx-border-radius: 10px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.65), 20, 0.4, 0, 8);
+}
+
+.game-title {
+    -fx-font-family: "Monospaced";
+    -fx-font-size: 42px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffd84d;
+    -fx-effect: dropshadow(gaussian, rgba(255, 140, 0, 0.65), 12, 0.4, 0, 2);
+}
+
+.game-subtitle {
+    -fx-font-family: "Monospaced";
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #8be9fd;
+}
+
+.retro-button {
+    -fx-font-family: "Monospaced";
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+
+    -fx-background-color: linear-gradient(from 0% 0% to 0% 100%, #ffcc33, #ff8c1a);
+    -fx-text-fill: #1b1b1b;
+
+    -fx-border-color: #fff3b0;
+    -fx-border-width: 3px;
+
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+
+    -fx-cursor: hand;
+}
+
+.retro-button:hover {
+    -fx-background-color: linear-gradient(from 0% 0% to 0% 100%, #ffe066, #ffa733);
+    -fx-effect: dropshadow(gaussian, rgba(255, 200, 0, 0.5), 12, 0.3, 0, 2);
+}
+
+.retro-button:pressed {
+    -fx-background-color: linear-gradient(from 0% 0% to 0% 100%, #d99a00, #cc6f00);
+    -fx-translate-y: 2px;
+}
+
+/* --- BOUTON DANGER (Rouge mais style Rétro) --- */
+.danger-button {
+    -fx-font-family: "Monospaced";
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+
+    -fx-background-color: linear-gradient(from 0% 0% to 0% 100%, #ff6b6b, #d64545);
+    -fx-text-fill: white;
+
+    -fx-border-color: #fff3b0;
+    -fx-border-width: 3px;
+
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+
+    -fx-cursor: hand;
+}
+
+.danger-button:hover {
+    -fx-background-color: linear-gradient(from 0% 0% to 0% 100%, #ff8585, #e05151);
+    -fx-effect: dropshadow(gaussian, rgba(255, 107, 107, 0.5), 12, 0.3, 0, 2);
+}
+
+.danger-button:pressed {
+    -fx-background-color: linear-gradient(from 0% 0% to 0% 100%, #b33939, #8e2828);
+    -fx-translate-y: 2px;
+}
+
+.footer-text {
+    -fx-font-family: "Monospaced";
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #c7d2fe;
+}
+
+.footer-small {
+    -fx-font-family: "Monospaced";
+    -fx-font-size: 12px;
+    -fx-text-fill: #7dd3fc;
+}
+
+/* =========================================================================
+   NOUVEAUX STYLES AJOUTÉS (Basés sur VOS couleurs et polices)
+   ========================================================================= */
+
+/* Force la police et la couleur jaune par défaut pour tous les textes normaux */
+.root-menu .label {
+    -fx-font-family: "Monospaced";
+    -fx-text-fill: #ffd84d;
+    -fx-font-size: 14px;
+}
+
+/* --- TEXTFIELDS, PASSWORDFIELDS, COMBOBOX --- */
+.text-field, .password-field, .combo-box {
+    -fx-background-color: #0f1021; /* Le fond de votre application */
+    -fx-text-fill: #8be9fd; /* Votre texte cyan */
+    -fx-border-color: #f9d65c; /* Votre jaune pour la bordure */
+    -fx-border-width: 2px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-font-family: "Monospaced";
+    -fx-font-size: 14px;
+}
+
+.text-field:focused, .password-field:focused, .combo-box:focused {
+    -fx-border-color: #ffcc33;
+    -fx-effect: dropshadow(gaussian, rgba(255, 200, 0, 0.4), 8, 0.2, 0, 0);
+}
+
+.combo-box .list-view {
+    -fx-background-color: #0f1021;
+    -fx-border-color: #f9d65c;
+}
+
+.combo-box .list-cell {
+    -fx-text-fill: #8be9fd;
+    -fx-font-family: "Monospaced";
+}
+
+.combo-box .list-cell:hover, .combo-box .list-cell:filled:selected {
+    -fx-background-color: #22254a; /* Votre fond clair */
+    -fx-text-fill: #ffd84d;
+}
+
+/* --- SPINNERS (Champs avec flèches haut/bas) --- */
+.spinner {
+    -fx-background-color: transparent;
+}
+
+.spinner .text-field {
+    -fx-border-width: 2px 0 2px 2px;
+    -fx-border-radius: 5px 0 0 5px;
+    -fx-background-radius: 5px 0 0 5px;
+}
+
+.spinner .increment-arrow-button, .spinner .decrement-arrow-button {
+    -fx-background-color: #22254a;
+    -fx-border-color: #f9d65c;
+}
+
+.spinner .increment-arrow-button {
+    -fx-border-width: 2px 2px 1px 1px;
+    -fx-border-radius: 0 5px 0 0;
+    -fx-background-radius: 0 5px 0 0;
+}
+
+.spinner .decrement-arrow-button {
+    -fx-border-width: 1px 2px 2px 1px;
+    -fx-border-radius: 0 0 5px 0;
+    -fx-background-radius: 0 0 5px 0;
+}
+
+.spinner .increment-arrow, .spinner .decrement-arrow {
+    -fx-background-color: #ffd84d; /* Flèches en jaune */
+}
+
+/* --- TITLED PANE (Menu déroulant Paramètres avancés) --- */
+.titled-pane > .title {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #22254a, #15172f);
+    -fx-border-color: #f9d65c;
+    -fx-border-width: 2px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+.titled-pane > .title .text {
+    -fx-fill: #ffd84d;
+    -fx-font-family: "Monospaced";
+    -fx-font-weight: bold;
+}
+
+.titled-pane > .content {
+    -fx-background-color: rgba(34, 37, 74, 0.4); /* Fond transparent teinté */
+    -fx-border-color: transparent #f9d65c #f9d65c #f9d65c;
+    -fx-border-width: 2px;
+    -fx-border-radius: 0 0 5px 5px;
+}
+
+/* --- TABLEVIEW (Le Tableau de l'Arène) --- */
+.table-view {
+    -fx-background-color: transparent;
+    -fx-border-color: #f9d65c;
+    -fx-border-width: 2px;
+    -fx-border-radius: 5px;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #22254a, #15172f);
+    -fx-border-width: 0 0 2px 0;
+    -fx-border-color: #f9d65c;
+}
+
+.table-view .column-header {
+    -fx-background-color: transparent;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: #ffd84d;
+    -fx-font-weight: bold;
+    -fx-font-family: "Monospaced";
+    -fx-alignment: center;
+}
+
+.table-row-cell {
+    -fx-background-color: #0f1021;
+    -fx-border-color: transparent transparent rgba(249, 214, 92, 0.2) transparent;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: #1a1b3a;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: #22254a;
+}
+
+.table-row-cell:selected .text {
+    -fx-fill: #ffd84d;
+}
+
+.table-cell {
+    -fx-text-fill: #8be9fd;
+    -fx-font-family: "Monospaced";
+    -fx-alignment: center-left;
+    -fx-padding: 0 10px;
+}
+
+.table-view .placeholder .label {
+    -fx-text-fill: #ff8c1a;
+    -fx-font-size: 16px;
+}
+
+/* --- MENU BAR (En haut) --- */
+.menu-bar {
+    -fx-background-color: #0f1021;
+    -fx-border-color: transparent transparent #f9d65c transparent;
+}
+
+.menu-bar .label {
+    -fx-text-fill: #8be9fd;
+}
+
+.menu-bar .menu:hover, .menu-bar .menu:showing {
+    -fx-background-color: #22254a;
+}
+
+.menu-bar .menu:showing .label {
+    -fx-text-fill: #ffd84d;
+}
+
+.context-menu {
+    -fx-background-color: #0f1021;
+    -fx-border-color: #f9d65c;
+}
+
+.menu-item .label {
+    -fx-text-fill: #8be9fd;
+}
+
+.menu-item:focused {
+    -fx-background-color: #22254a;
+}
+
+.menu-item:focused .label {
+    -fx-text-fill: #ffd84d;
+}
+
+/* --- TITRE DE LA PAGE DE CRÉATION --- */
+#titleLabel {
+    -fx-font-size: 28px; /* On lui redonne une belle taille */
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffd84d; /* Jaune principal */
+    -fx-alignment: center;
+    /* Petit effet néon orangé pour coller au thème Bomberman */
+    -fx-effect: dropshadow(gaussian, rgba(255, 140, 0, 0.6), 10, 0.4, 0, 2);
+}
+
+/* --- FORÇAGE ABSOLU DE LA TAILLE DES TITRES --- */
+.root-menu .label.game-title {
+    -fx-font-size: 42px;
+}
+
+.root-menu .label.game-subtitle {
+    -fx-font-size: 18px;
+}
+
+/* =========================================================================
+   CHAT LOBBY
+   ========================================================================= */
+
+/* --- TITRE DE L'ARENE --- */
+#arenaNameLabel {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffd84d; 
+    -fx-alignment: center;
+    -fx-effect: dropshadow(gaussian, rgba(255, 140, 0, 0.6), 10, 0.4, 0, 2);
+    -fx-font-family: "Monospaced";
+}
+
+/* --- LIST VIEW (Liste des joueurs) --- */
+.list-view {
+    -fx-background-color: #0f1021;
+    -fx-border-color: #f9d65c;
+    -fx-border-width: 2px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+.list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #8be9fd;
+    -fx-font-family: "Monospaced";
+    -fx-font-size: 14px;
+    -fx-padding: 8px;
+}
+
+.list-cell:empty {
+    -fx-background-color: transparent; /* Masque les cases vides */
+}
+
+.list-cell:filled:hover {
+    -fx-background-color: #22254a;
+    -fx-text-fill: #ffd84d;
+}
+
+.list-cell:filled:selected {
+    -fx-background-color: rgba(255, 216, 77, 0.2); /* Surlignage jaune transparent */
+    -fx-text-fill: #ffd84d;
+}
+
+/* --- TEXT AREA (Historique du Chat) --- */
+.text-area {
+    -fx-background-color: transparent;
+    -fx-font-family: "Monospaced";
+    -fx-font-size: 14px;
+    -fx-border-color: #f9d65c;
+    -fx-border-width: 2px;
+    -fx-border-radius: 5px;
+    -fx-text-fill: #ffffff;
+}
+
+.text-area .content {
+    -fx-background-color: #0f1021; /* Fond sombre */
+    -fx-background-radius: 5px;
+    -fx-text-fill: #ffffff;
+    -fx-padding: 5px;
+}
+
+/* Texte à l'intérieur du chat - force blanc */
+.text-area .text {
+    -fx-fill: #ffffff;
+}
+
+/* Texte du contenu - force blanc */
+.text-area:focused .content {
+    -fx-text-fill: #ffffff;
+}
+
+/* Effet au focus pour le TextArea */
+.text-area:focused {
+    -fx-border-color: #ffcc33;
+    -fx-effect: dropshadow(gaussian, rgba(255, 200, 0, 0.4), 8, 0.2, 0, 0);
+    -fx-text-fill: #ffffff;
+}
+
+/* =========================================================================
+   SETTINGS PAGE (Paramètres des touches)
+   ========================================================================= */
+
+/* Labels des paramètres */
+.settings-label {
+    -fx-font-family: "Monospaced";
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #8be9fd;
+}
+
+/* Affichage des touches actuelles */
+.key-display {
+    -fx-font-family: "Monospaced";
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffd84d;
+    -fx-background-color: rgba(34, 37, 74, 0.8);
+    -fx-padding: 8px 16px;
+    -fx-border-color: #f9d65c;
+    -fx-border-width: 2px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-min-width: 80px;
+    -fx-alignment: center;
+}
+
+/* Bouton plus petit pour les paramètres */
+.retro-button-small {
+    -fx-font-family: "Monospaced";
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+
+    -fx-background-color: linear-gradient(from 0% 0% to 0% 100%, #ffcc33, #ff8c1a);
+    -fx-text-fill: #1b1b1b;
+
+    -fx-border-color: #fff3b0;
+    -fx-border-width: 2px;
+
+    -fx-background-radius: 6px;
+    -fx-border-radius: 6px;
+
+    -fx-cursor: hand;
+}
+
+.retro-button-small:hover {
+    -fx-background-color: linear-gradient(from 0% 0% to 0% 100%, #ffe066, #ffa733);
+    -fx-effect: dropshadow(gaussian, rgba(255, 200, 0, 0.5), 8, 0.3, 0, 1);
+}
+
+.retro-button-small:pressed {
+    -fx-background-color: linear-gradient(from 0% 0% to 0% 100%, #d99a00, #cc6f00);
+    -fx-translate-y: 1px;
+}
+
+/* =========================================================================
+   DIALOG PANE (Popups & Alerts JavaFX)
+   ========================================================================= */
+
+/* 1. Le fond principal et la bordure de la fenêtre */
+.dialog-pane {
+    -fx-background-color: #0f1021;
+    -fx-border-color: #f9d65c;
+    -fx-border-width: 3px;
+}
+
+/* 2. La zone d'en-tête (HeaderText - ex: "Accès refusé") */
+.dialog-pane > .header-panel {
+    -fx-background-color: #15172f; /* Fond légèrement plus clair pour le titre */
+    -fx-border-color: transparent transparent #f9d65c transparent; /* Ligne de séparation jaune */
+    -fx-border-width: 2px;
+}
+
+/* Le texte de l'en-tête */
+.dialog-pane > .header-panel .label {
+    -fx-font-family: "Monospaced";
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffd84d; /* Texte en jaune */
+}
+
+/* 3. La zone de contenu (ContentText - ex: "Le mot de passe est incorrect") */
+.dialog-pane > .content {
+    -fx-background-color: #0f1021; /* Force le fond sombre */
+}
+
+/* Le texte du contenu */
+.dialog-pane > .content.label {
+    -fx-font-family: "Monospaced";
+    -fx-font-size: 14px;
+    -fx-text-fill: #8be9fd; /* Texte en cyan */
+}
+
+/* 4. La zone des boutons tout en bas */
+.dialog-pane > .button-bar,
+.dialog-pane > .button-bar > .container {
+    -fx-background-color: #0f1021; /* Force le fond sombre */
+}
+
+/* 5. Le style des boutons "OK" et "Annuler" (Copie du style retro-button) */
+.dialog-pane .button-bar .button {
+    -fx-font-family: "Monospaced";
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-color: linear-gradient(from 0% 0% to 0% 100%, #ffcc33, #ff8c1a);
+    -fx-text-fill: #1b1b1b;
+    -fx-border-color: #fff3b0;
+    -fx-border-width: 2px;
+    -fx-background-radius: 6px;
+    -fx-border-radius: 6px;
+    -fx-cursor: hand;
+    -fx-padding: 5px 20px;
+}
+
+.dialog-pane .button-bar .button:hover {
+    -fx-background-color: linear-gradient(from 0% 0% to 0% 100%, #ffe066, #ffa733);
+    -fx-effect: dropshadow(gaussian, rgba(255, 200, 0, 0.5), 10, 0.3, 0, 0);
+}
+
+.dialog-pane .button-bar .button:pressed {
+    -fx-background-color: linear-gradient(from 0% 0% to 0% 100%, #d99a00, #cc6f00);
+    -fx-translate-y: 1px;
+}

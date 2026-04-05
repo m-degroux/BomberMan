@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:id="rootPane" prefHeight="600.0"
+            prefWidth="800.0"
+            style="-fx-background-color: #1a1a1a;" xmlns="http://javafx.com/javafx/21"
+            fx:controller="fr.iutgon.sae401.clientSide.controller.GameController">
+    <children>
+        <Pane fx:id="gamePane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+              AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
+    </children>
+</AnchorPane>

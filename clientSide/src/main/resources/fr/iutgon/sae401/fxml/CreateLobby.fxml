@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml/1" styleClass="root-menu" maxHeight="-Infinity" maxWidth="-Infinity"
+      minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="550.0"
+      xmlns="http://javafx.com/javafx/19" fx:controller="fr.iutgon.sae401.clientSide.controllers.CreateLobbyController">
+    
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+    </padding>
+
+    <VBox alignment="CENTER" spacing="20.0" VBox.vgrow="ALWAYS">
+        <children>
+            <Label fx:id="titleLabel" text="Créer une nouvelle arène"/>
+
+            <GridPane fx:id="optionsGrid" alignment="CENTER" maxWidth="450.0" hgap="15.0" vgap="15.0">
+                <columnConstraints>
+                    <ColumnConstraints halignment="RIGHT" hgrow="NEVER" minWidth="150.0" prefWidth="150.0"/>
+                    <ColumnConstraints hgrow="NEVER" minWidth="200.0" prefWidth="300.0"/>
+                </columnConstraints>
+                <rowConstraints>
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                </rowConstraints>
+                <children>
+                    <Label text="Nom de l'arène :"/>
+                    <TextField fx:id="serverNameField" promptText="Ex: Partie de John" GridPane.columnIndex="1"/>
+
+                    <Label text="Thème de carte :" GridPane.rowIndex="1"/>
+                    <ComboBox fx:id="mapComboBox" promptText="Sélectionner (optionnel)" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+                    <Label text="Mot de passe :" GridPane.rowIndex="2"/>
+                    <PasswordField fx:id="passwordField" promptText="Optionnel" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                </children>
+            </GridPane>
+
+            <TitledPane animated="true" expanded="false" text="Paramètres avancés de la partie" maxWidth="600.0">
+                <content>
+                    <GridPane alignment="CENTER" hgap="15.0" vgap="10.0">
+                        <columnConstraints>
+                            <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="200.0"/>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="120.0"/>
+                        </columnConstraints>
+                        <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                        </rowConstraints>
+                        <children>
+                            <Label text="Largeur de la carte :"/>
+                            <Spinner fx:id="widthSpinner" editable="true" GridPane.columnIndex="1">
+                                <valueFactory>
+                                    <SpinnerValueFactory.IntegerSpinnerValueFactory amountToStepBy="2" initialValue="15"
+                                                                                    max="51" min="5"/>
+                                </valueFactory>
+                            </Spinner>
+
+                            <Label text="Hauteur de la carte :" GridPane.rowIndex="1"/>
+                            <Spinner fx:id="heightSpinner" editable="true" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                <valueFactory>
+                                    <SpinnerValueFactory.IntegerSpinnerValueFactory amountToStepBy="2" initialValue="13"
+                                                                                    max="51" min="5"/>
+                                </valueFactory>
+                            </Spinner>
+
+                            <Label text="Points de vie initiaux :" GridPane.rowIndex="2"/>
+                            <Spinner fx:id="healthSpinner" editable="true" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                <valueFactory>
+                                    <SpinnerValueFactory.IntegerSpinnerValueFactory initialValue="3" max="10" min="1"/>
+                                </valueFactory>
+                            </Spinner>
+
+                            <Label text="Bombes max par joueur :" GridPane.rowIndex="3"/>
+                            <Spinner fx:id="maxBombsSpinner" editable="true" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                <valueFactory>
+                                    <SpinnerValueFactory.IntegerSpinnerValueFactory initialValue="1" max="10" min="1"/>
+                                </valueFactory>
+                            </Spinner>
+
+                            <Label text="Portée des bombes :" GridPane.rowIndex="4"/>
+                            <Spinner fx:id="bombRangeSpinner" editable="true" GridPane.columnIndex="1"
+                                     GridPane.rowIndex="4">
+                                <valueFactory>
+                                    <SpinnerValueFactory.IntegerSpinnerValueFactory initialValue="1" max="10" min="1"/>
+                                </valueFactory>
+                            </Spinner>
+                        <Label text="Temps de recharge bombe (ms) :" GridPane.rowIndex="5"/>
+                        <Spinner fx:id="bombCooldownSpinner" editable="true" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                            <valueFactory>
+                                <SpinnerValueFactory.IntegerSpinnerValueFactory amountToStepBy="10" initialValue="2000"
+                                                                                max="10000" min="0"/>
+                            </valueFactory>
+                        </Spinner>
+                            <Label text="Nombre de blocs destructibles (%) :" GridPane.rowIndex="6"/>
+                            <Spinner fx:id="fillingSpinner" editable="true" GridPane.columnIndex="1" GridPane.rowIndex="6">
+                                <valueFactory>
+                                    <SpinnerValueFactory.IntegerSpinnerValueFactory amountToStepBy="5" initialValue="70"
+                                                                                    max="100" min="0"/>
+                                </valueFactory>
+                            </Spinner>
+                        </children>
+                    </GridPane>
+                </content>
+            </TitledPane>
+        </children>
+    </VBox>
+
+    <HBox alignment="BOTTOM_RIGHT" spacing="15.0">
+        <children>
+            <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#handleCancel" text="Annuler"
+                    styleClass="retro-button"/>
+            <Button fx:id="createConfirmButton" defaultButton="true" mnemonicParsing="false"
+                    onAction="#handleCreateConfirm" text="Créer le serveur" styleClass="retro-button"/>
+        </children>
+    </HBox>
+</VBox>

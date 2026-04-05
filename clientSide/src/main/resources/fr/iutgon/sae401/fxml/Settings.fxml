@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<StackPane xmlns:fx="http://javafx.com/fxml/1"
+           xmlns="http://javafx.com/javafx/21"
+           fx:controller="fr.iutgon.sae401.clientSide.controllers.SettingsController"
+           styleClass="root-menu"
+           stylesheets="@../css/styleMainMenu.css">
+
+    <VBox fx:id="rootPane" alignment="CENTER" spacing="12" maxWidth="680" styleClass="menu-panel">
+        <padding>
+            <Insets top="30" right="35" bottom="30" left="35"/>
+        </padding>
+
+        <Label text="PARAMÈTRES DES TOUCHES" styleClass="game-title"/>
+        <Label fx:id="clientSlotLabel" text="Client 1 (Flèches)" styleClass="game-subtitle"/>
+        
+        <Region minHeight="18"/>
+
+        <GridPane hgap="20" vgap="14" alignment="CENTER">
+            <columnConstraints>
+                <ColumnConstraints minWidth="180" halignment="RIGHT"/>
+                <ColumnConstraints minWidth="100" halignment="CENTER"/>
+                <ColumnConstraints minWidth="150" halignment="LEFT"/>
+            </columnConstraints>
+
+            <!-- Move Up -->
+            <Label text="Déplacer vers le HAUT:" GridPane.columnIndex="0" GridPane.rowIndex="0" 
+                   styleClass="settings-label"/>
+            <Label fx:id="moveUpLabel" text="Z" GridPane.columnIndex="1" GridPane.rowIndex="0"
+                   styleClass="key-display"/>
+            <Button fx:id="moveUpButton" text="Changer" GridPane.columnIndex="2" GridPane.rowIndex="0"
+                    onAction="#onChangeMoveUp" styleClass="retro-button-small" prefWidth="140"/>
+
+            <!-- Move Down -->
+            <Label text="Déplacer vers le BAS:" GridPane.columnIndex="0" GridPane.rowIndex="1"
+                   styleClass="settings-label"/>
+            <Label fx:id="moveDownLabel" text="S" GridPane.columnIndex="1" GridPane.rowIndex="1"
+                   styleClass="key-display"/>
+            <Button fx:id="moveDownButton" text="Changer" GridPane.columnIndex="2" GridPane.rowIndex="1"
+                    onAction="#onChangeMoveDown" styleClass="retro-button-small" prefWidth="140"/>
+
+            <!-- Move Left -->
+            <Label text="Déplacer vers la GAUCHE:" GridPane.columnIndex="0" GridPane.rowIndex="2"
+                   styleClass="settings-label"/>
+            <Label fx:id="moveLeftLabel" text="Q" GridPane.columnIndex="1" GridPane.rowIndex="2"
+                   styleClass="key-display"/>
+            <Button fx:id="moveLeftButton" text="Changer" GridPane.columnIndex="2" GridPane.rowIndex="2"
+                    onAction="#onChangeMoveLeft" styleClass="retro-button-small" prefWidth="140"/>
+
+            <!-- Move Right -->
+            <Label text="Déplacer vers la DROITE:" GridPane.columnIndex="0" GridPane.rowIndex="3"
+                   styleClass="settings-label"/>
+            <Label fx:id="moveRightLabel" text="D" GridPane.columnIndex="1" GridPane.rowIndex="3"
+                   styleClass="key-display"/>
+            <Button fx:id="moveRightButton" text="Changer" GridPane.columnIndex="2" GridPane.rowIndex="3"
+                    onAction="#onChangeMoveRight" styleClass="retro-button-small" prefWidth="140"/>
+
+            <!-- Drop Bomb -->
+            <Label text="Poser une BOMBE:" GridPane.columnIndex="0" GridPane.rowIndex="4"
+                   styleClass="settings-label"/>
+            <Label fx:id="dropBombLabel" text="ESPACE" GridPane.columnIndex="1" GridPane.rowIndex="4"
+                   styleClass="key-display"/>
+            <Button fx:id="dropBombButton" text="Changer" GridPane.columnIndex="2" GridPane.rowIndex="4"
+                    onAction="#onChangeDropBomb" styleClass="retro-button-small" prefWidth="140"/>
+        </GridPane>
+
+        <Region minHeight="12"/>
+
+        <HBox alignment="CENTER" spacing="12">
+            <Label text="Manette:" styleClass="settings-label"/>
+            <ComboBox fx:id="gamepadComboBox" prefWidth="360"/>
+        </HBox>
+
+        <Region minHeight="8"/>
+
+        <Label text="Appuyez sur ÉCHAP pour annuler la saisie d'une touche"
+               styleClass="footer-text"/>
+
+        <Region minHeight="8"/>
+
+        <HBox alignment="CENTER" spacing="16">
+            <Button text="RÉINITIALISER"
+                    prefWidth="180"
+                    prefHeight="48"
+                    styleClass="retro-button"
+                    onAction="#onResetToDefault"/>
+            
+            <Button text="SAUVEGARDER"
+                    prefWidth="180"
+                    prefHeight="48"
+                    styleClass="retro-button"
+                    onAction="#onSave"/>
+            
+            <Button text="ANNULER"
+                    prefWidth="180"
+                    prefHeight="48"
+                    styleClass="retro-button"
+                    onAction="#onCancel"/>
+        </HBox>
+
+    </VBox>
+
+</StackPane>

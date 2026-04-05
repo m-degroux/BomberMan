@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<VBox xmlns:fx="http://javafx.com/fxml/1" fx:id="mainVBox" styleClass="root-menu" maxHeight="-Infinity" maxWidth="-Infinity"
+      minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="700.0"
+      xmlns="http://javafx.com/javafx/19" fx:controller="fr.iutgon.sae401.clientSide.controllers.MenuLobbyController">
+    <children>
+        <TableView fx:id="arenaTable" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="nameColumn" prefWidth="75.0" text="Nom"/>
+                <TableColumn fx:id="statusColumn" prefWidth="75.0" text="Statut"/>
+                <TableColumn fx:id="playersColumn" prefWidth="75.0" text="Joueurs"/>
+            </columns>
+            <columnResizePolicy>
+                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+            </columnResizePolicy>
+        </TableView>
+        <HBox alignment="CENTER_RIGHT" spacing="15.0">
+            <children>
+                <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#handleCancel" text="Retour"
+                        styleClass="retro-button"/>
+                <Button fx:id="createButton" mnemonicParsing="false" onAction="#handleCreateServer"
+                        text="Créer une partie" styleClass="retro-button"/>
+                <Button fx:id="joinButton" disable="true" mnemonicParsing="false" onAction="#handleJoinServer"
+                        text="Rejoindre" styleClass="retro-button"/>
+            </children>
+            <padding>
+                <Insets bottom="10.0" left="15.0" right="15.0" top="10.0"/>
+            </padding>
+        </HBox>
+    </children>
+</VBox>
