@@ -11,6 +11,7 @@ import fr.iutgon.sae401.serverSide.server.ClientContext;
 import fr.iutgon.sae401.serverSide.server.clients.ClientId;
 import fr.iutgon.sae401.serverSide.server.clients.InMemoryClientRegistry;
 import fr.iutgon.sae401.serverSide.server.clients.InMemoryNicknameRegistry;
+import fr.iutgon.sae401.serverSide.server.clients.InMemorySkinRegistry;
 import fr.iutgon.sae401.serverSide.server.handlers.lobby.LobbyServices;
 import fr.iutgon.sae401.serverSide.server.rooms.InMemoryReadyManager;
 import fr.iutgon.sae401.serverSide.server.rooms.InMemoryRoomManager;
@@ -207,6 +208,42 @@ class StartGameHandlerTest {
 		assertEquals(MapTheme.PERFECT, matchTheme);
 	}
 
+	@Test
+	void handle_appliesSelectedSkinsToPlayersInGame() {
+		Fixture fixture = fixture();
+		TestClientContext c1 = fixture.registerClient("c1");
+		TestClientContext c2 = fixture.registerClient("c2");
+		RoomId waitingRoom = new RoomId("room-skins");
+		fixture.engine.joinRoom(waitingRoom, c1.clientId());
+		fixture.engine.joinRoom(waitingRoom, c2.clientId());
+		
+		// Select skins in lobby
+		fixture.skins.setSkin(c1.clientId(), 5);
+		fixture.skins.setSkin(c2.clientId(), 10);
+		
+		// Verify skins are set in the registry before game starts
+		assertEquals(5, fixture.skins.getSkin(c1.clientId()), "c1 should have skin 5 in registry");
+		assertEquals(10, fixture.skins.getSkin(c2.clientId()), "c2 should have skin 10 in registry");
+		
+		// Mark ready and start game
+		fixture.ready.setReady(c1.clientId(), true);
+		fixture.ready.setReady(c2.clientId(), true);
+
+		Optional<MessageEnvelope> resp = fixture.handler.handle(startRequest("r-skins", Json.emptyObject()), c1);
+		assertTrue(resp.isEmpty());
+
+		MessageEnvelope started = c1.sent.stream()
+				.filter(m -> "game_started".equals(m.getType()))
+				.findFirst()
+				.orElseThrow();
+		String matchRoomValue = started.getPayload().value("newRoom", (String) null);
+		assertNotNull(matchRoomValue);
+		
+		// Verify both clients received game_started
+		assertTrue(c1.sent.stream().anyMatch(m -> "game_started".equals(m.getType())), "c1 should receive game_started");
+		assertTrue(c2.sent.stream().anyMatch(m -> "game_started".equals(m.getType())), "c2 should receive game_started");
+	}
+
 	private static void assertStartFailedReason(Optional<MessageEnvelope> response, String reason) {
 		assertTrue(response.isPresent());
 		MessageEnvelope envelope = response.orElseThrow();
@@ -227,6 +264,7 @@ class StartGameHandlerTest {
 		private final ReadyManager ready = new InMemoryReadyManager();
 		private final InMemoryRoomManager rooms = new InMemoryRoomManager();
 		private final InMemoryNicknameRegistry nicknames = new InMemoryNicknameRegistry();
+		private final InMemorySkinRegistry skins = new InMemorySkinRegistry();
 		private final RoomId lobbyRoom = new RoomId("lobby");
 		private final RoomPerThreadEngine engine = new RoomPerThreadEngine(
 				new ServerGameConfig(10, 10),
@@ -235,9 +273,10 @@ class StartGameHandlerTest {
 				List.of(),
 				lobbyRoom,
 				(roomId) -> (GameEngine) dtSeconds -> {
-				}
+				},
+				skins
 		);
-		private final StartGameHandler handler = new StartGameHandler(new LobbyServices(engine, ready, clients, nicknames));
+		private final StartGameHandler handler = new StartGameHandler(new LobbyServices(engine, ready, clients, nicknames, skins));
 
 		private TestClientContext registerClient(String id) {
 			return registerClient(id, new InetSocketAddress("127.0.0.1", 1));

@@ -34,6 +34,7 @@ public class PlayerView {
     }
 
     public void setWin() {
+        // Allow transition to win even if already in lose/dead state
         if (!state.equals("win")) {
             this.state = "win";
             this.stateStartTime = System.nanoTime();
@@ -41,6 +42,7 @@ public class PlayerView {
     }
 
     public void setLose() {
+        // Allow transition to lose even if already in dead/win state
         if (!state.equals("lose")) {
             this.state = "lose";
             this.stateStartTime = System.nanoTime();

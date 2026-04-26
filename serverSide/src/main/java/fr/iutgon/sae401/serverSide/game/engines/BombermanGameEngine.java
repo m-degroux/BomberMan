@@ -27,6 +27,7 @@ import fr.iutgon.sae401.common.model.dto.PlayerDTO;
 import fr.iutgon.sae401.serverSide.game.GameEngine;
 import fr.iutgon.sae401.serverSide.server.clients.ClientId;
 import fr.iutgon.sae401.serverSide.server.clients.ClientRegistry;
+import fr.iutgon.sae401.serverSide.server.clients.SkinRegistry;
 import fr.iutgon.sae401.common.logger.LogLevel;
 import fr.iutgon.sae401.common.logger.LogMessage;
 import fr.iutgon.sae401.common.logger.Logger;
@@ -64,17 +65,23 @@ public class BombermanGameEngine implements GameEngine {
 	private final java.util.LinkedHashMap<String, TileType> tileDeltas = new java.util.LinkedHashMap<>();
 	private boolean matchFinished = false;
     private int nextBotStrategyIndex = 0;
+	private final SkinRegistry skinRegistry;
 
     public BombermanGameEngine(GameConfig config, ClientRegistry clients) {
-        this(config, clients, MapTheme.CLASSIC);
+        this(config, clients, MapTheme.CLASSIC, null);
     }
 
     public BombermanGameEngine(GameConfig config, ClientRegistry clients, MapTheme theme) {
+        this(config, clients, theme, null);
+    }
+
+    public BombermanGameEngine(GameConfig config, ClientRegistry clients, MapTheme theme, SkinRegistry skinRegistry) {
         this.config = config;
         this.mapFactory = new BombermanMapFactory(config.getDestructibleDensity());
         MapTheme safeTheme = theme == null ? MapTheme.CLASSIC : theme;
         GameMap map = mapFactory.create(config.getWidth(), config.getHeight(), safeTheme);
         this.state = new GameState(map);
+        this.skinRegistry = skinRegistry;
     }
 
     /**
@@ -214,7 +221,8 @@ public class BombermanGameEngine implements GameEngine {
             }
         }
         Position spawn = pickSpawnAvoidingPlayers(config.getWidth(), config.getHeight());
-        Player base = new Player(id, spawn, config.getInitialHealth(), config.getMaxBombs());
+        int skinId = skinRegistry != null ? skinRegistry.getSkin(clientId) : -1;
+        Player base = new Player(id, spawn, config.getInitialHealth(), config.getMaxBombs(), skinId);
         base.setBombRange(config.getBombRange());
         state.addPlayer(base);
 		bumpVersion();

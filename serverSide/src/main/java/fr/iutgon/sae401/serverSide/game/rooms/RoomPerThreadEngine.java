@@ -12,6 +12,7 @@ import fr.iutgon.sae401.serverSide.game.ServerGameConfig;
 import fr.iutgon.sae401.serverSide.game.engines.BombermanGameEngine;
 import fr.iutgon.sae401.serverSide.server.clients.ClientId;
 import fr.iutgon.sae401.serverSide.server.clients.ClientRegistry;
+import fr.iutgon.sae401.serverSide.server.clients.SkinRegistry;
 import fr.iutgon.sae401.serverSide.server.udp.UdpCapableClientRegistry;
 import fr.iutgon.sae401.serverSide.server.rooms.RoomId;
 import fr.iutgon.sae401.serverSide.server.rooms.RoomManager;
@@ -55,6 +56,7 @@ public final class RoomPerThreadEngine implements GameEngine, SelfRunningGameEng
     private final List<RoomId> availableRooms;
     private final RoomId defaultRoom;
     private final Function<RoomId, GameEngine> engineFactory;
+    private final SkinRegistry skins;
     // Stores gameplay config per room
     private final ConcurrentMap<RoomId, GameConfig> gameplayConfigs = new ConcurrentHashMap<>();
 	// Stores map theme per room
@@ -73,7 +75,8 @@ public final class RoomPerThreadEngine implements GameEngine, SelfRunningGameEng
             RoomManager rooms,
             List<RoomId> availableRooms,
             RoomId defaultRoom,
-            Function<RoomId, GameEngine> engineFactory
+            Function<RoomId, GameEngine> engineFactory,
+            SkinRegistry skins
     ) {
         this.config = Objects.requireNonNull(config, "config");
         this.clients = Objects.requireNonNull(clients, "clients");
@@ -81,6 +84,7 @@ public final class RoomPerThreadEngine implements GameEngine, SelfRunningGameEng
         this.availableRooms = List.copyOf(Objects.requireNonNull(availableRooms, "availableRooms"));
         this.defaultRoom = Objects.requireNonNull(defaultRoom, "defaultRoom");
         this.engineFactory = Objects.requireNonNull(engineFactory, "engineFactory");
+        this.skins = Objects.requireNonNull(skins, "skins");
     }
 
     /**
@@ -272,7 +276,7 @@ public final class RoomPerThreadEngine implements GameEngine, SelfRunningGameEng
             return instances.computeIfAbsent(roomId, id -> {
                 LOGGER.log(new LogMessage("[ROOM] Creating room: " + id, LogLevel.INFO));
                 GameEngine engine = engineFactory.apply(id);
-                RoomInstance instance = new RoomInstance(id, config, engine, clients, rooms);
+                RoomInstance instance = new RoomInstance(id, config, engine, clients, rooms, skins);
                 if (running) {
                     instance.loop.start();
                 }
@@ -286,6 +290,7 @@ public final class RoomPerThreadEngine implements GameEngine, SelfRunningGameEng
 
     private static final class RoomInstance {
         private final GameEngine engine;
+        private final SkinRegistry skins;
         private final ConcurrentLinkedQueue<Runnable> tasks = new ConcurrentLinkedQueue<>();
         private final GameLoop loop;
 		private long lastSentStateVersion = Long.MIN_VALUE;
@@ -322,8 +327,9 @@ public final class RoomPerThreadEngine implements GameEngine, SelfRunningGameEng
             }
         }
 
-        private RoomInstance(RoomId roomId, ServerGameConfig config, GameEngine engine, ClientRegistry clientRegistry, RoomManager roomManager) {
+        private RoomInstance(RoomId roomId, ServerGameConfig config, GameEngine engine, ClientRegistry clientRegistry, RoomManager roomManager, SkinRegistry skins) {
             this.engine = Objects.requireNonNull(engine, "engine");
+            this.skins = Objects.requireNonNull(skins, "skins");
             Objects.requireNonNull(clientRegistry, "clients");
             Objects.requireNonNull(roomManager, "rooms");
             GameEngine wrapper = new GameEngine() {
@@ -569,7 +575,13 @@ public final class RoomPerThreadEngine implements GameEngine, SelfRunningGameEng
                 }
                 Integer assigned = skinByPlayerId.get(dto.id);
                 if (assigned == null) {
-                    assigned = pickRandomUnusedSkin(usedSkins);
+                    // Try to use the skin selected in lobby first
+                    int lobbySkin = skins.getSkin(new ClientId(dto.id));
+                    if (lobbySkin >= 0 && !usedSkins.contains(lobbySkin)) {
+                        assigned = lobbySkin;
+                    } else {
+                        assigned = pickRandomUnusedSkin(usedSkins);
+                    }
                     skinByPlayerId.put(dto.id, assigned);
                     usedSkins.add(assigned);
                 }

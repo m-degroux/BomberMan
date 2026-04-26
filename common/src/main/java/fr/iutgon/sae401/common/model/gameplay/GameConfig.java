@@ -113,7 +113,7 @@ public class GameConfig {
     public GameConfig() {
         this.width = 15;
         this.height = 13;
-        this.initialHealth = 3;
+        this.initialHealth = 1;
         this.maxBombs = 1;
         this.bombRange = 2;
 		this.bombTimer = 2000;

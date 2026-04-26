@@ -33,14 +33,14 @@
                     <Label text="Thème de carte :" GridPane.rowIndex="1"/>
                     <ComboBox fx:id="mapComboBox" promptText="Sélectionner (optionnel)" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
 
-                    <Label text="Mot de passe :" GridPane.rowIndex="2"/>
+                    <Label fx:id="passwordLabel" text="Mot de passe :" GridPane.rowIndex="2"/>
                     <PasswordField fx:id="passwordField" promptText="Optionnel" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
                 </children>
             </GridPane>
 
             <TitledPane animated="true" expanded="false" text="Paramètres avancés de la partie" maxWidth="600.0">
                 <content>
-                    <GridPane alignment="CENTER" hgap="15.0" vgap="10.0">
+                    <GridPane alignment="CENTER" hgap="15.0" vgap="5.0">
                         <columnConstraints>
                             <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="200.0"/>
                             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="120.0"/>
@@ -48,7 +48,7 @@
                         <rowConstraints>
                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                            <RowConstraints minHeight="0.0" prefHeight="0.0" vgrow="NEVER"/>
                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
@@ -71,7 +71,7 @@
                                 </valueFactory>
                             </Spinner>
 
-                            <Label text="Points de vie initiaux :" GridPane.rowIndex="2"/>
+                            <Label fx:id="healthLabel" text="Points de vie initiaux :" GridPane.rowIndex="2"/>
                             <Spinner fx:id="healthSpinner" editable="true" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                 <valueFactory>
                                     <SpinnerValueFactory.IntegerSpinnerValueFactory initialValue="3" max="10" min="1"/>

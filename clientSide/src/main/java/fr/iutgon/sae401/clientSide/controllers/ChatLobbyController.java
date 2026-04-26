@@ -12,8 +12,13 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
 import java.io.IOException;
@@ -40,9 +45,13 @@ public class ChatLobbyController implements NetworkObserver{
     private Button sendButton;
     @FXML
     private Button readyButton;
+    @FXML
+    private Button chooseSkinButton;
 	@FXML
 	private TextField pseudoField;
     private boolean isReady = false;
+    private int currentSkinId = 0;
+    private static final int[] AVAILABLE_SKINS = {0, 1, 2, 3, 4, 5, 7, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 31, 33, 34};
     private static final int START_COUNTDOWN_SECONDS = 3;
     private static final int MIN_PLAYERS_TO_START = 2;
     private Timeline startCountdownTimeline;
@@ -56,6 +65,7 @@ public class ChatLobbyController implements NetworkObserver{
         leaveButton.setOnAction(this::handleLeaveLobby);
 
         sendButton.setOnAction(event -> sendMessage());
+        chooseSkinButton.setOnAction(event -> openSkinSelector());
 
         // Permet d'envoyer le message en appuyant sur la touche "Entrée" du clavier
         messageInputField.setOnKeyPressed(event -> {
@@ -120,6 +130,105 @@ public class ChatLobbyController implements NetworkObserver{
             App.sendToServer(new MessageEnvelope("set_nickname", UUID.randomUUID().toString(), payload));
             pseudoField.clear();
         }
+    }
+
+    private void openSkinSelector() {
+        Dialog<Integer> dialog = new Dialog<>();
+        dialog.setTitle("Sélectionner un skin");
+        dialog.setHeaderText("Parcourez et sélectionnez votre skin (Flèches: naviguer, R_0: confirmer)");
+        dialog.setResizable(true);
+        
+        dialog.getDialogPane().getStylesheets().add(
+                getClass().getResource("/fr/iutgon/sae401/css/styleMainMenu.css").toExternalForm()
+        );
+
+        VBox content = new VBox(15);
+        content.setPadding(new Insets(15));
+        content.setStyle("-fx-border-color: #333; -fx-border-width: 1;");
+
+        HBox previewBox = new HBox();
+        previewBox.setPrefHeight(150);
+        previewBox.setStyle("-fx-border-color: #666; -fx-border-width: 1; -fx-alignment: center;");
+        ImageView previewImage = new ImageView();
+        previewImage.setFitHeight(120);
+        previewImage.setFitWidth(80);
+        previewImage.setPreserveRatio(true);
+        previewBox.getChildren().add(previewImage);
+        previewBox.setAlignment(Pos.CENTER);
+
+        Label skinLabel = new Label("Skin ID: " + currentSkinId);
+        skinLabel.setStyle("-fx-font-size: 14px; -fx-font-weight: bold;");
+
+        HBox navigationBox = new HBox(10);
+        navigationBox.setAlignment(Pos.CENTER);
+        Button prevButton = new Button("← Précédent");
+        Button randomButton = new Button("Aléatoire");
+        Button nextButton = new Button("Suivant →");
+        
+        prevButton.setStyle("-fx-padding: 10px 20px; -fx-font-size: 12px;");
+        randomButton.setStyle("-fx-padding: 10px 20px; -fx-font-size: 12px;");
+        nextButton.setStyle("-fx-padding: 10px 20px; -fx-font-size: 12px;");
+
+        Runnable updatePreview = () -> {
+            skinLabel.setText("Skin ID: " + currentSkinId);
+            previewImage.setImage(fr.iutgon.sae401.clientSide.service.SpriteManager.getPlayerFrame(currentSkinId, "S", 0));
+        };
+
+        prevButton.setOnAction(e -> {
+            int currentIndex = java.util.Arrays.binarySearch(AVAILABLE_SKINS, currentSkinId);
+            if (currentIndex > 0) {
+                currentSkinId = AVAILABLE_SKINS[currentIndex - 1];
+                updatePreview.run();
+            }
+        });
+
+        nextButton.setOnAction(e -> {
+            int currentIndex = java.util.Arrays.binarySearch(AVAILABLE_SKINS, currentSkinId);
+            if (currentIndex < AVAILABLE_SKINS.length - 1) {
+                currentSkinId = AVAILABLE_SKINS[currentIndex + 1];
+                updatePreview.run();
+            }
+        });
+
+        randomButton.setOnAction(e -> {
+            java.util.Random random = new java.util.Random();
+            currentSkinId = AVAILABLE_SKINS[random.nextInt(AVAILABLE_SKINS.length)];
+            updatePreview.run();
+        });
+
+        navigationBox.getChildren().addAll(prevButton, randomButton, nextButton);
+        content.getChildren().addAll(
+                new Label("Navigation du skin:"),
+                previewBox,
+                skinLabel,
+                navigationBox
+        );
+
+        dialog.getDialogPane().setContent(content);
+        
+        javafx.scene.control.ButtonType confirmButton = new javafx.scene.control.ButtonType("Confirmer", javafx.scene.control.ButtonBar.ButtonData.OK_DONE);
+        javafx.scene.control.ButtonType cancelButton = javafx.scene.control.ButtonType.CANCEL;
+        dialog.getDialogPane().getButtonTypes().setAll(confirmButton, cancelButton);
+
+        updatePreview.run();
+
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == confirmButton) {
+                return currentSkinId;
+            }
+            return null;
+        });
+
+        java.util.Optional<Integer> result = dialog.showAndWait();
+        if (result.isPresent()) {
+            sendSkinSelection(result.get());
+        }
+    }
+
+    private void sendSkinSelection(int skinId) {
+        App.LOGGER.log(new LogMessage("[CLIENT] Sélection du skin : " + skinId, LogLevel.INFO));
+        Json payload = Json.object(java.util.Map.of("skinId", Json.of(skinId)));
+        App.sendToServer(new MessageEnvelope("select_skin", UUID.randomUUID().toString(), payload));
     }
 
     /**

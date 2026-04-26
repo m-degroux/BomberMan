@@ -101,7 +101,7 @@ class UdpGamePositionsIntegrationTest {
                 Map<String, Json> gameCfg = new LinkedHashMap<>();
                 gameCfg.put("width", Json.of(15));
                 gameCfg.put("height", Json.of(13));
-                gameCfg.put("initialHealth", Json.of(3));
+                gameCfg.put("initialHealth", Json.of(1));
                 gameCfg.put("maxBombs", Json.of(1));
                 gameCfg.put("bombRange", Json.of(2));
                 gameCfg.put("bombCooldownMs", Json.of(300));

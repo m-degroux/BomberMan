@@ -6,6 +6,7 @@ import fr.iutgon.sae401.serverSide.game.rooms.RoomPerThreadEngine;
 import fr.iutgon.sae401.serverSide.server.ClientContext;
 import fr.iutgon.sae401.serverSide.server.MessageHandler;
 import fr.iutgon.sae401.serverSide.server.clients.ClientId;
+import fr.iutgon.sae401.serverSide.server.clients.SkinRegistry;
 import fr.iutgon.sae401.serverSide.server.rooms.ReadyManager;
 import fr.iutgon.sae401.serverSide.server.rooms.RoomId;
 
@@ -15,17 +16,19 @@ import java.util.*;
  * Lobby state snapshot handler.
  * <p>
  * Request:  type = "lobby_state" payload = ignored
- * Response: type = "lobby_state" payload = { "roomId": string|null, "members": [ {"clientId": string, "nickname": string, "ready": boolean}... ] }
+ * Response: type = "lobby_state" payload = { "roomId": string|null, "members": [ {"clientId": string, "nickname": string, "skinId": int, "ready": boolean}... ] }
  */
 public final class LobbyStateHandler implements MessageHandler {
 	private final RoomPerThreadEngine engine;
 	private final ReadyManager ready;
 	private final fr.iutgon.sae401.serverSide.server.clients.NicknameRegistry nicknames;
+	private final SkinRegistry skins;
 
-	public LobbyStateHandler(RoomPerThreadEngine engine, ReadyManager ready, fr.iutgon.sae401.serverSide.server.clients.NicknameRegistry nicknames) {
+	public LobbyStateHandler(RoomPerThreadEngine engine, ReadyManager ready, fr.iutgon.sae401.serverSide.server.clients.NicknameRegistry nicknames, SkinRegistry skins) {
 		this.engine = Objects.requireNonNull(engine, "engine");
 		this.ready = Objects.requireNonNull(ready, "ready");
 		this.nicknames = Objects.requireNonNull(nicknames, "nicknames");
+		this.skins = Objects.requireNonNull(skins, "skins");
 	}
 
 	@Override
@@ -45,6 +48,7 @@ public final class LobbyStateHandler implements MessageHandler {
 				members.add(Json.object(java.util.Map.of(
 						"clientId", Json.of(id.value()),
 						"nickname", Json.of(nicknames.getNickname(id)),
+						"skinId", Json.of(skins.getSkin(id)),
 						"ready", Json.of(ready.isReady(id))
 				)));
 			}

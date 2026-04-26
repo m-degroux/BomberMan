@@ -200,6 +200,40 @@ class BombermanEngineStateOpsTest {
     }
 
     @Test
+    void applyExplosionDamageOnce_dropsPlayerBonusesOnDeath() {
+        GameState state = new GameState(openMap(9, 9));
+        // Create a player with 1 HP so one explosion kills them
+        Player player = player("target", 4, 4, 1);
+        state.addPlayer(player);
+        
+        // Apply a speed bonus to wrap the player
+        fr.iutgon.sae401.common.model.bonus.SpeedBonus bonusWrapped = 
+            new fr.iutgon.sae401.common.model.bonus.SpeedBonus(player);
+        state.replacePlayer(player.getId(), bonusWrapped);
+        
+        // Explosion at different location from player so bonus can drop
+        Explosion explosion = new Explosion(new Position(4, 4), List.of(new Position(4, 4)), 500);
+        state.addExplosion(explosion);
+
+        Map<Explosion, Set<String>> damagedByExplosion = new HashMap<>();
+
+        // Tick to activate explosion (delay for center frame)
+        explosion.tick(0.08);
+        assertTrue(BombermanEngineStateOps.applyExplosionDamageOnce(state, damagedByExplosion));
+        
+        // Check player is dead
+        IPlayer target = state.getPlayerById("target");
+        assertFalse(target.isAlive());
+        
+        // Check bonuses were dropped
+        assertTrue(!state.getBonuses().isEmpty(), "Bonuses should be dropped when player dies. Debug: " + state.getBonuses().size() + " bonuses");
+        assertEquals(1, state.getBonuses().size());
+        BonusPickup dropped = state.getBonuses().get(0);
+        assertNotNull(dropped.getPosition(), "Dropped bonus position should not be null");
+        assertEquals(fr.iutgon.sae401.common.model.bonus.BonusType.SPEED, dropped.getType());
+    }
+
+    @Test
     void explosionDurationMs_handlesNegativeRangeAndNormalRange() {
         assertEquals(560, BombermanEngineStateOps.explosionDurationMs(-3, 7, 80));
         assertEquals(880, BombermanEngineStateOps.explosionDurationMs(2, 7, 80));
@@ -235,7 +269,7 @@ class BombermanEngineStateOpsTest {
     }
 
     private static Player player(String id, int x, int y, int health) {
-        return new Player(id, new Position(x, y), health, 2);
+        return new Player(id, new Position(x, y), health, 2, -1);
     }
 
     private static GameMap openMap(int width, int height) {

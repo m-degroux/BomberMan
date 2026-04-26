@@ -20,11 +20,12 @@ public final class LobbyStateBroadcaster {
 	private LobbyStateBroadcaster() {
 	}
 
-	public static void broadcastRoom(RoomPerThreadEngine engine, ReadyManager ready, ClientRegistry clients, fr.iutgon.sae401.serverSide.server.clients.NicknameRegistry nicknames, RoomId roomId) {
+	public static void broadcastRoom(RoomPerThreadEngine engine, ReadyManager ready, ClientRegistry clients, fr.iutgon.sae401.serverSide.server.clients.NicknameRegistry nicknames, fr.iutgon.sae401.serverSide.server.clients.SkinRegistry skins, RoomId roomId) {
 		Objects.requireNonNull(engine, "engine");
 		Objects.requireNonNull(ready, "ready");
 		Objects.requireNonNull(clients, "clients");
 		Objects.requireNonNull(nicknames, "nicknames");
+		Objects.requireNonNull(skins, "skins");
 		Objects.requireNonNull(roomId, "roomId");
 
 		java.util.Set<ClientId> idsSet = new java.util.HashSet<>(engine.rooms().members(roomId));
@@ -49,6 +50,7 @@ public final class LobbyStateBroadcaster {
 			members.add(Json.object(java.util.Map.of(
 					"clientId", Json.of(id.value()),
 					"nickname", Json.of(nicknames.getNickname(id)),
+					"skinId", Json.of(skins.getSkin(id)),
 					"ready", Json.of(!inGame && ready.isReady(id)),
 					"inGame", Json.of(inGame)
 			)));

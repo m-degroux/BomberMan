@@ -13,12 +13,15 @@ import fr.iutgon.sae401.serverSide.server.MessageHandler;
 import fr.iutgon.sae401.serverSide.server.clients.ClientId;
 import fr.iutgon.sae401.serverSide.server.clients.ClientRegistry;
 import fr.iutgon.sae401.serverSide.server.clients.InMemoryNicknameRegistry;
+import fr.iutgon.sae401.serverSide.server.clients.InMemorySkinRegistry;
 import fr.iutgon.sae401.serverSide.server.clients.NicknameRegistry;
+import fr.iutgon.sae401.serverSide.server.clients.SkinRegistry;
 import fr.iutgon.sae401.serverSide.server.handlers.game.InputHandler;
 import fr.iutgon.sae401.serverSide.server.handlers.lobby.chat.ChatHandler;
 import fr.iutgon.sae401.serverSide.server.handlers.lobby.LobbyServices;
 import fr.iutgon.sae401.serverSide.server.handlers.lobby.game.ReadyHandler;
 import fr.iutgon.sae401.serverSide.server.handlers.lobby.game.SetNicknameHandler;
+import fr.iutgon.sae401.serverSide.server.handlers.lobby.game.SelectSkinHandler;
 import fr.iutgon.sae401.serverSide.server.handlers.lobby.game.StartGameHandler;
 import fr.iutgon.sae401.serverSide.server.handlers.lobby.game.RestartGameHandler;
 import fr.iutgon.sae401.serverSide.server.handlers.lobby.rooms.CreateRoomHandler;
@@ -49,6 +52,7 @@ public final class LobbyRoomsModule implements GameModule {
     private volatile RoomPerThreadEngine roomEngine;
     private volatile ReadyManager ready;
     private volatile NicknameRegistry nicknames;
+    private volatile SkinRegistry skins;
 
     public LobbyRoomsModule(String serverName, String protocolVersion) {
         this(serverName, protocolVersion, new RoomId("lobby"), List.of());
@@ -76,6 +80,7 @@ public final class LobbyRoomsModule implements GameModule {
         RoomManager roomManager = new InMemoryRoomManager();
         ReadyManager readyManager = new InMemoryReadyManager();
         NicknameRegistry nicknameRegistry = new InMemoryNicknameRegistry();
+        SkinRegistry skinRegistry = new InMemorySkinRegistry();
         RoomPerThreadEngine perRoom = new RoomPerThreadEngine(
                 config,
                 clients,
@@ -96,16 +101,18 @@ public final class LobbyRoomsModule implements GameModule {
 						if (theme == null) {
 							theme = MapTheme.CLASSIC;
 						}
-                        return new BombermanGameEngine(cfg, clients, theme);
+                        return new BombermanGameEngine(cfg, clients, theme, skinRegistry);
                     }
-                }
+                },
+                skinRegistry
         );
 
         this.roomEngine = perRoom;
         this.ready = readyManager;
         this.nicknames = nicknameRegistry;
+        this.skins = skinRegistry;
 
-		return new LobbyEngine(perRoom, readyManager, clients, nicknameRegistry);
+		return new LobbyEngine(perRoom, readyManager, clients, nicknameRegistry, skinRegistry);
 	}
 
     @Override
@@ -113,12 +120,13 @@ public final class LobbyRoomsModule implements GameModule {
         RoomPerThreadEngine perRoom = this.roomEngine;
         ReadyManager readyManager = this.ready;
         NicknameRegistry nicknameRegistry = this.nicknames;
-        if (perRoom == null || readyManager == null || nicknameRegistry == null) {
+        SkinRegistry skinRegistry = this.skins;
+        if (perRoom == null || readyManager == null || nicknameRegistry == null || skinRegistry == null) {
             throw new IllegalStateException("createEngine must be called before createHandlers");
         }
 
         RoomManager roomManager = perRoom.rooms();
-		LobbyServices lobby = new LobbyServices(perRoom, readyManager, clients, nicknameRegistry);
+		LobbyServices lobby = new LobbyServices(perRoom, readyManager, clients, nicknameRegistry, skinRegistry);
         return List.of(
                 // system
                 new PingHandler(),
@@ -128,12 +136,13 @@ public final class LobbyRoomsModule implements GameModule {
 
 				// lobby/rooms
 				new ListRoomsHandler(perRoom),
-				new LobbyStateHandler(perRoom, readyManager, nicknameRegistry),
+				new LobbyStateHandler(perRoom, readyManager, nicknameRegistry, skinRegistry),
                 new CreateRoomHandler(lobby),
                 new JoinRoomHandler(lobby),
                 new LeaveRoomHandler(lobby),
                 new ReadyHandler(lobby),
                 new SetNicknameHandler(lobby),
+                new SelectSkinHandler(lobby),
                 new StartGameHandler(lobby),
 				new RestartGameHandler(lobby),
 				new ChatHandler(roomManager, clients, nicknameRegistry),
@@ -147,15 +156,17 @@ public final class LobbyRoomsModule implements GameModule {
 		private final RoomPerThreadEngine delegate;
 		private final ReadyManager ready;
 		private final NicknameRegistry nicknames;
+		private final SkinRegistry skins;
         private final LobbyServices lobby;
 
         private final Logger logger = Logger.getLogger();
 
-		private LobbyEngine(RoomPerThreadEngine delegate, ReadyManager ready, ClientRegistry clients, NicknameRegistry nicknames) {
+		private LobbyEngine(RoomPerThreadEngine delegate, ReadyManager ready, ClientRegistry clients, NicknameRegistry nicknames, SkinRegistry skins) {
 			this.delegate = Objects.requireNonNull(delegate, "delegate");
 			this.ready = Objects.requireNonNull(ready, "ready");
 			this.nicknames = Objects.requireNonNull(nicknames, "nicknames");
-            this.lobby = new LobbyServices(delegate, ready, Objects.requireNonNull(clients, "clients"), nicknames);
+			this.skins = Objects.requireNonNull(skins, "skins");
+            this.lobby = new LobbyServices(delegate, ready, Objects.requireNonNull(clients, "clients"), nicknames, skins);
 		}
 
         @Override
@@ -195,6 +206,7 @@ public final class LobbyRoomsModule implements GameModule {
 			} finally {
 				ready.clear(clientId);
 				nicknames.remove(clientId);
+				skins.remove(clientId);
 			}
             lobby.broadcastRooms();
 		}

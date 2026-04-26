@@ -99,7 +99,7 @@ public final class CreateRoomHandler implements MessageHandler {
 			gameplayConfig = new GameConfig(
 					width,
 					height,
-					cfg.value("initialHealth", 3),
+					cfg.value("initialHealth", 1),
 					cfg.value("maxBombs", 1),
 					cfg.value("bombRange", 2),
 					bombTimer,

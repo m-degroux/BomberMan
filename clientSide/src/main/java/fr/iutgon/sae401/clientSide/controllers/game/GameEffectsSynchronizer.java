@@ -165,19 +165,20 @@ final class GameEffectsSynchronizer {
                 ImageView iv = bonuses.get(key);
                 if (iv == null) {
                     var img = switch (type) {
-                        case "SPEED" -> SpriteManager.get("boost", "eclair.png");
+                        case "SPEED" -> SpriteManager.get("boost", "speed.png");
                         case "MAX_BOMBS" -> SpriteManager.get("boost", "bomb.png");
-                        case "BOMB_RANGE" -> SpriteManager.get("boost", "cible.png");
+                        case "BOMB_RANGE" -> SpriteManager.get("boost", "range.png");
                         default -> null;
                     };
                     if (img == null) {
                         continue;
                     }
                     iv = new ImageView(img);
-                    iv.fitWidthProperty().bind(tileSize);
-                    iv.fitHeightProperty().bind(tileSize);
-                    iv.layoutXProperty().bind(tileSize.multiply(x));
-                    iv.layoutYProperty().bind(tileSize.multiply(y));
+                    double bonusScale = 0.7;
+                    iv.fitWidthProperty().bind(tileSize.multiply(bonusScale));
+                    iv.fitHeightProperty().bind(tileSize.multiply(bonusScale));
+                    iv.layoutXProperty().bind(tileSize.multiply(x).add(tileSize.multiply((1 - bonusScale) / 2)));
+                    iv.layoutYProperty().bind(tileSize.multiply(y).add(tileSize.multiply((1 - bonusScale) / 2)));
                     bonuses.put(key, iv);
                     bonusLayer.getChildren().add(iv);
                 }
@@ -334,19 +335,20 @@ final class GameEffectsSynchronizer {
             ImageView iv = bonuses.get(key);
             if (iv == null) {
                 var img = switch (type) {
-                    case "SPEED" -> SpriteManager.get("boost", "eclair.png");
+                    case "SPEED" -> SpriteManager.get("boost", "speed.png");
                     case "MAX_BOMBS" -> SpriteManager.get("boost", "bomb.png");
-                    case "BOMB_RANGE" -> SpriteManager.get("boost", "cible.png");
+                    case "BOMB_RANGE" -> SpriteManager.get("boost", "range.png");
                     default -> null;
                 };
                 if (img == null) {
                     continue;
                 }
                 iv = new ImageView(img);
-                iv.fitWidthProperty().bind(tileSize);
-                iv.fitHeightProperty().bind(tileSize);
-                iv.layoutXProperty().bind(tileSize.multiply(x));
-                iv.layoutYProperty().bind(tileSize.multiply(y));
+                double bonusScale = 0.7;
+                iv.fitWidthProperty().bind(tileSize.multiply(bonusScale));
+                iv.fitHeightProperty().bind(tileSize.multiply(bonusScale));
+                iv.layoutXProperty().bind(tileSize.multiply(x).add(tileSize.multiply((1 - bonusScale) / 2)));
+                iv.layoutYProperty().bind(tileSize.multiply(y).add(tileSize.multiply((1 - bonusScale) / 2)));
                 bonuses.put(key, iv);
                 bonusLayer.getChildren().add(iv);
             }

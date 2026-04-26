@@ -6,6 +6,7 @@ import fr.iutgon.sae401.common.model.dto.PlayerDTO;
 import fr.iutgon.sae401.common.protocol.MessageEnvelope;
 import fr.iutgon.sae401.serverSide.server.clients.ClientId;
 import fr.iutgon.sae401.serverSide.server.clients.ClientRegistry;
+import fr.iutgon.sae401.serverSide.server.clients.InMemorySkinRegistry;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -17,6 +18,50 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
 class BombermanGameEngineTest {
+
+    @Test
+    void onClientConnected_includesSkinIdWhenRegistryProvided() {
+        InMemorySkinRegistry registry = new InMemorySkinRegistry();
+        ClientId playerId = new ClientId("player-1");
+        registry.setSkin(playerId, 5);
+        
+        BombermanGameEngine engine = new BombermanGameEngine(
+            new GameConfig(7, 7, 3, 1, 1, 2000, 0.1f),
+            new NoopClientRegistry(),
+            null,
+            registry
+        );
+
+        engine.onClientConnected(playerId);
+
+        PlayerDTO player = engine.snapshotPlayersDTO().get(0);
+        assertEquals(5, player.skinId);
+    }
+
+    @Test
+    void snapshotPlayersDTO_includesSkinIdForAllPlayers() {
+        InMemorySkinRegistry registry = new InMemorySkinRegistry();
+        ClientId player1 = new ClientId("p1");
+        ClientId player2 = new ClientId("p2");
+        registry.setSkin(player1, 3);
+        registry.setSkin(player2, 7);
+        
+        BombermanGameEngine engine = new BombermanGameEngine(
+            new GameConfig(7, 7, 3, 2, 2, 2000, 0.1f),
+            new NoopClientRegistry(),
+            null,
+            registry
+        );
+
+        engine.onClientConnected(player1);
+        engine.onClientConnected(player2);
+
+        var players = engine.snapshotPlayersDTO();
+        var p1 = requirePlayer(engine, "p1");
+        var p2 = requirePlayer(engine, "p2");
+        assertEquals(3, p1.skinId);
+        assertEquals(7, p2.skinId);
+    }
 
     @Test
     void onClientConnected_addsHumanPlayer() {
@@ -117,7 +162,7 @@ class BombermanGameEngineTest {
     }
 
     private static BombermanGameEngine createEngine(GameConfig config) {
-        return new BombermanGameEngine(config, new NoopClientRegistry());
+        return new BombermanGameEngine(config, new NoopClientRegistry(), null, null);
     }
 
     private static PlayerDTO requirePlayer(BombermanGameEngine engine, String playerId) {

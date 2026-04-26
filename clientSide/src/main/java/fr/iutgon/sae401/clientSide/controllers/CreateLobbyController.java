@@ -18,6 +18,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
@@ -38,14 +39,17 @@ public class CreateLobbyController implements NetworkObserver {
     @FXML private Button createConfirmButton;
     @FXML private TextField serverNameField;
     @FXML private PasswordField passwordField;
+    @FXML private Label passwordLabel;
     @FXML private Spinner<Integer> widthSpinner;
     @FXML private Spinner<Integer> heightSpinner;
     @FXML private Spinner<Integer> healthSpinner;
+    @FXML private Label healthLabel;
     @FXML private Spinner<Integer> maxBombsSpinner;
     @FXML private Spinner<Integer> bombRangeSpinner;
     @FXML private Spinner<Integer> bombCooldownSpinner;
     @FXML private Spinner<Integer> fillingSpinner;
 	@FXML private ComboBox<MapTheme> mapComboBox;
+	@FXML private Label titleLabel;
 
     @FXML
     public void initialize() {
@@ -56,8 +60,31 @@ public class CreateLobbyController implements NetworkObserver {
 		}
         enforceOddDimensionSpinner(widthSpinner);
         enforceOddDimensionSpinner(heightSpinner);
-        if (LocalServerManager.isLocalModeEnabled() && createConfirmButton != null) {
-            createConfirmButton.setText("Lancer la partie");
+        if (healthSpinner != null) {
+            healthSpinner.setDisable(true);
+            healthSpinner.setVisible(false);
+        }
+        if (healthLabel != null) {
+            healthLabel.setDisable(true);
+            healthLabel.setVisible(false);
+        }
+        if (LocalServerManager.isLocalModeEnabled()) {
+            if (createConfirmButton != null) {
+                createConfirmButton.setText("Lancer la partie");
+            }
+            // Hide password field and label in local mode
+            if (passwordField != null) {
+                passwordField.setDisable(true);
+                passwordField.setVisible(false);
+            }
+            if (passwordLabel != null) {
+                passwordLabel.setDisable(true);
+                passwordLabel.setVisible(false);
+            }
+            // Change title in local mode
+            if (titleLabel != null) {
+                titleLabel.setText("Partie locale");
+            }
         }
         prefillFromLocalReplayIfRequested();
     }
@@ -96,7 +123,7 @@ public class CreateLobbyController implements NetworkObserver {
         Map<String, Json> gameCfg = new LinkedHashMap<>();
         gameCfg.put("width", Json.of(normalizedWidth));
         gameCfg.put("height", Json.of(normalizedHeight));
-        gameCfg.put("initialHealth", Json.of(healthSpinner.getValue()));
+        gameCfg.put("initialHealth", Json.of(1));
         gameCfg.put("maxBombs", Json.of(maxBombsSpinner.getValue()));
         gameCfg.put("bombRange", Json.of(bombRangeSpinner.getValue()));
         if (bombCooldownSpinner != null && bombCooldownSpinner.getValue() != null) {
@@ -119,7 +146,7 @@ public class CreateLobbyController implements NetworkObserver {
                     password,
                     normalizedWidth,
                     normalizedHeight,
-                    healthSpinner.getValue(),
+                    1,
                     maxBombsSpinner.getValue(),
                     bombRangeSpinner.getValue(),
                     bombCooldownSpinner != null && bombCooldownSpinner.getValue() != null ? bombCooldownSpinner.getValue() : 2000,

@@ -75,6 +75,7 @@ public final class GameHudOverlay {
         healthContainer.setPadding(new Insets(10));
         healthContainer.setLayoutX(10);
         healthContainer.setLayoutY(10);
+        healthContainer.setVisible(false);
 
         bombContainer.setAlignment(Pos.CENTER_LEFT);
         bombContainer.setPadding(new Insets(10));
@@ -104,6 +105,46 @@ public final class GameHudOverlay {
 
     public void showGameOver(boolean victory) {
         if (gameEnded) {
+            // Still apply animations to players even if gameEnded is true
+            Map<String, RemotePlayer> playersSnapshot = playersSupplier.get();
+            String currentPlayerId = App.clientId();
+            String winnerId = null;
+            if (!victory) {
+                int aliveOpponents = 0;
+                String candidateWinner = null;
+                for (var entry : playersSnapshot.entrySet()) {
+                    RemotePlayer p = entry.getValue();
+                    if (p == null || !p.alive) {
+                        continue;
+                    }
+                    if (currentPlayerId != null && currentPlayerId.equals(entry.getKey())) {
+                        continue;
+                    }
+                    aliveOpponents++;
+                    candidateWinner = entry.getKey();
+                    if (aliveOpponents > 1) {
+                        break;
+                    }
+                }
+                if (aliveOpponents == 1) {
+                    winnerId = candidateWinner;
+                }
+            }
+
+            for (var entry : playersSnapshot.entrySet()) {
+                String playerId = entry.getKey();
+                RemotePlayer player = entry.getValue();
+                if (player == null) {
+                    continue;
+                }
+                if (victory && player.alive && currentPlayerId != null && currentPlayerId.equals(playerId)) {
+                    player.view.setWin();
+                } else if (!victory && currentPlayerId != null && currentPlayerId.equals(playerId)) {
+                    player.view.setLose();
+                } else if (!victory && winnerId != null && playerId.equals(winnerId)) {
+                    player.view.setWin();
+                }
+            }
             return;
         }
         gameEnded = true;

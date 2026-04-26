@@ -11,6 +11,7 @@ import fr.iutgon.sae401.serverSide.server.ClientContext;
 import fr.iutgon.sae401.serverSide.server.clients.ClientId;
 import fr.iutgon.sae401.serverSide.server.clients.InMemoryClientRegistry;
 import fr.iutgon.sae401.serverSide.server.clients.InMemoryNicknameRegistry;
+import fr.iutgon.sae401.serverSide.server.clients.InMemorySkinRegistry;
 import fr.iutgon.sae401.serverSide.server.clients.NicknameRegistry;
 import fr.iutgon.sae401.serverSide.server.handlers.lobby.LobbyServices;
 import fr.iutgon.sae401.serverSide.server.rooms.InMemoryReadyManager;
@@ -33,6 +34,7 @@ class RestartGameHandlerTest {
 		InMemoryClientRegistry clients = new InMemoryClientRegistry();
 		ReadyManager ready = new InMemoryReadyManager();
 		NicknameRegistry nicknames = new InMemoryNicknameRegistry();
+		InMemorySkinRegistry skins = new InMemorySkinRegistry();
 		var rooms = new InMemoryRoomManager();
 
 		RoomId lobbyRoom = new RoomId("lobby");
@@ -43,7 +45,8 @@ class RestartGameHandlerTest {
 				List.of(),
 				lobbyRoom,
 				(roomId) -> (GameEngine) dtSeconds -> {
-				}
+				},
+				skins
 		);
 
 		ClientId c1 = new ClientId("c1");
@@ -59,7 +62,7 @@ class RestartGameHandlerTest {
 		engine.setGameplayConfig(oldMatch, new GameConfig(17, 15, 3, 2, 3, 2500, 0.2f));
 		engine.setMapTheme(oldMatch, MapTheme.PERFECT);
 
-		RestartGameHandler handler = new RestartGameHandler(new LobbyServices(engine, ready, clients, nicknames));
+		RestartGameHandler handler = new RestartGameHandler(new LobbyServices(engine, ready, clients, nicknames, skins));
 		Optional<MessageEnvelope> resp = handler.handle(new MessageEnvelope("restart_game", "r1", Json.nullValue()), ctx1);
 		assertTrue(resp.isEmpty());
 

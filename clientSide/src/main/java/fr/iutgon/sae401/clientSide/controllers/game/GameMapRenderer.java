@@ -141,6 +141,8 @@ public final class GameMapRenderer {
         objectLayer.getChildren().clear();
         objectViewsByTile.clear();
         renderedTileTypes = new TileType[map.getHeight()][map.getWidth()];
+        floorLayer.setCache(false);
+        objectLayer.setCache(false);
 
         for (int y = 0; y < map.getHeight(); y++) {
             for (int x = 0; x < map.getWidth(); x++) {
@@ -155,6 +157,8 @@ public final class GameMapRenderer {
                 }
             }
         }
+        floorLayer.setCache(true);
+        objectLayer.setCache(true);
     }
 
     private void updateObjectTile(int x, int y, TileType type) {

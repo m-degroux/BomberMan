@@ -47,6 +47,9 @@ public class PlayerDTO {
      * Conversion depuis Player.
      */
     public static PlayerDTO from(IPlayer ip) {
+        int skinId = (ip instanceof fr.iutgon.sae401.common.model.entity.Player) 
+            ? ((fr.iutgon.sae401.common.model.entity.Player) ip).getSkinId() 
+            : -1;
         return new PlayerDTO(
                 ip.getId(),
                 ip.getPosition().getX(),
@@ -57,7 +60,8 @@ public class PlayerDTO {
                 ip.getNickname(),
                 ip.getSpeed(),
                 ip.getBombRange(),
-                ip.getMaxBombs()
+                ip.getMaxBombs(),
+                skinId
         );
     }
 

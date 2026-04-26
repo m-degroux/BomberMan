@@ -12,7 +12,7 @@ public class GameConfigTest {
 
         assertEquals(15, config.getWidth());
         assertEquals(13, config.getHeight());
-        assertEquals(3, config.getInitialHealth());
+        assertEquals(1, config.getInitialHealth());
         assertEquals(1, config.getMaxBombs());
         assertEquals(2, config.getBombRange());
         assertEquals(2000, config.getBombTimer());

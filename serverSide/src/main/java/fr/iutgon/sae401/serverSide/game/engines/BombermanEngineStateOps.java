@@ -1,6 +1,7 @@
 package fr.iutgon.sae401.serverSide.game.engines;
 
 import fr.iutgon.sae401.common.json.Json;
+import fr.iutgon.sae401.common.model.bonus.Bonus;
 import fr.iutgon.sae401.common.model.bonus.BombRangeBonus;
 import fr.iutgon.sae401.common.model.bonus.BonusPickup;
 import fr.iutgon.sae401.common.model.bonus.BonusType;
@@ -195,7 +196,24 @@ final class BombermanEngineStateOps {
                     continue;
                 }
                 already.add(p.getId());
+                boolean wasAlive = p.isAlive();
                 p.takeDamage();
+                if (wasAlive && !p.isAlive()) {
+                    List<BonusType> bonusTypes = extractBonusTypes(p);
+                    List<Position> emptyTiles = findEmptyTiles(state);
+                    System.out.println("[DEBUG] Player died with " + bonusTypes.size() + " bonuses, " + emptyTiles.size() + " empty tiles");
+                    Random rand = new Random();
+
+                    for (BonusType bonusType : bonusTypes) {
+                        if (emptyTiles.isEmpty()) {
+                            break;
+                        }
+                        int randomIndex = rand.nextInt(emptyTiles.size());
+                        Position randomPos = emptyTiles.remove(randomIndex);
+                        BonusPickup droppedBonus = new BonusPickup(randomPos, bonusType);
+                        state.addBonus(droppedBonus);
+                    }
+                }
                 damaged = true;
             }
         }
@@ -276,5 +294,90 @@ final class BombermanEngineStateOps {
             }
         }
         return out;
+    }
+
+    private static List<BonusType> extractBonusTypes(IPlayer player) {
+        List<BonusType> bonusTypes = new ArrayList<>();
+        if (player == null) {
+            return bonusTypes;
+        }
+
+        IPlayer current = player;
+        while (current != null) {
+            if (current instanceof SpeedBonus) {
+                bonusTypes.add(BonusType.SPEED);
+                Bonus bonusObj = (Bonus) current;
+                current = getBonusWrappedPlayer(bonusObj);
+            } else if (current instanceof MaxBombBonus) {
+                bonusTypes.add(BonusType.MAX_BOMBS);
+                Bonus bonusObj = (Bonus) current;
+                current = getBonusWrappedPlayer(bonusObj);
+            } else if (current instanceof BombRangeBonus) {
+                bonusTypes.add(BonusType.BOMB_RANGE);
+                Bonus bonusObj = (Bonus) current;
+                current = getBonusWrappedPlayer(bonusObj);
+            } else {
+                break;
+            }
+        }
+
+        return bonusTypes;
+    }
+
+
+    private static IPlayer getBonusWrappedPlayer(Bonus bonus) {
+        try {
+            java.lang.reflect.Field field = Bonus.class.getDeclaredField("player");
+            field.setAccessible(true);
+            return (IPlayer) field.get(bonus);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private static List<Position> findEmptyTiles(GameState state) {
+        List<Position> emptyTiles = new ArrayList<>();
+        GameMap map = state.getMap();
+        if (map == null) {
+            return emptyTiles;
+        }
+
+        int width = map.getWidth();
+        int height = map.getHeight();
+
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                Position pos = new Position(x, y);
+                Tile tile = map.getTile(pos);
+
+                if (tile == null || tile.getType() != TileType.GROUND) {
+                    continue;
+                }
+
+                boolean occupied = false;
+
+                for (IPlayer player : state.getPlayers()) {
+                    if (player != null && pos.equals(player.getPosition())) {
+                        occupied = true;
+                        break;
+                    }
+                }
+
+                if (!occupied) {
+                    for (BonusPickup bonus : state.getBonuses()) {
+                        if (bonus != null && pos.equals(bonus.getPosition())) {
+                            occupied = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (!occupied) {
+                    emptyTiles.add(pos);
+                }
+            }
+        }
+
+        return emptyTiles;
     }
 }

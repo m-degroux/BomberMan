@@ -13,9 +13,14 @@ public class Player extends Entity implements IPlayer {
 	private String nickname;
 	private float speed;
 	private int bombRange;
+	private int skinId;
 	private List<Double> bombCooldowns = new ArrayList<>();
 
 	public Player(String id, Position position, int health, int maxBombs) {
+		this(id, position, health, maxBombs, -1);
+	}
+
+	public Player(String id, Position position, int health, int maxBombs, int skinId) {
 		super(id, position);
 		this.health = health;
 		this.maxBombs = maxBombs;
@@ -24,6 +29,7 @@ public class Player extends Entity implements IPlayer {
 		this.nickname = id;
 		this.speed = 1f;
 		this.bombRange = 1;
+		this.skinId = skinId;
 	}
 
 	public static IPlayer fromJson(String json) {
@@ -40,8 +46,9 @@ public class Player extends Entity implements IPlayer {
 		boolean alive = json.at("alive").getBoolean();
 		int bombs = json.at("bombs").getInt();
 		String nickname = json.value("nickname", id);
+		int skinId = json.value("skinId", -1);
 
-		Player p = new Player(id, pos, health, bombs);
+		Player p = new Player(id, pos, health, bombs, skinId);
 		p.nickname = nickname;
 		if (!alive) {
 			p.die();
@@ -135,7 +142,7 @@ public class Player extends Entity implements IPlayer {
 	public Json toJson() {
 		return Json.object(java.util.Map.of("id", Json.of(id), "position",
 				position == null ? Json.nullValue() : position.toJson(), "health", Json.of(health), "alive",
-				Json.of(alive), "bombs", Json.of(currentBombs), "nickname", Json.of(nickname)));
+				Json.of(alive), "bombs", Json.of(currentBombs), "nickname", Json.of(nickname), "skinId", Json.of(skinId)));
 	}
 
 	@Override
@@ -152,6 +159,14 @@ public class Player extends Entity implements IPlayer {
 		if (bombRange > 0) {
 			this.bombRange = bombRange;
 		}
+	}
+
+	public int getSkinId() {
+		return skinId;
+	}
+
+	public void setSkinId(int skinId) {
+		this.skinId = skinId;
 	}
 
 	@Override

@@ -36,7 +36,12 @@
 
         <BorderPane>
             <left>
-                <Button fx:id="leaveButton" mnemonicParsing="false" text="Quitter" styleClass="danger-button" BorderPane.alignment="BOTTOM_LEFT"/>
+                <HBox spacing="10.0" alignment="CENTER_LEFT" BorderPane.alignment="BOTTOM_LEFT">
+                    <children>
+                        <Button fx:id="leaveButton" mnemonicParsing="false" text="Quitter" styleClass="danger-button"/>
+                        <Button fx:id="chooseSkinButton" mnemonicParsing="false" text="Choisir le skin" styleClass="retro-button"/>
+                    </children>
+                </HBox>
             </left>
             <right>
                 <VBox alignment="BOTTOM_RIGHT" spacing="10.0" BorderPane.alignment="CENTER">
